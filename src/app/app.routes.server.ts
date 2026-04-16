@@ -1,6 +1,7 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 
-const POKEMON_LIMIT = 151;
+// const POKEMON_LIMIT = 151;
+const POKEMON_LIMIT = 10;
 
 async function fetchPokemonNames(limit: number): Promise<string[]> {
   const response = await fetch(
@@ -11,6 +12,15 @@ async function fetchPokemonNames(limit: number): Promise<string[]> {
 }
 
 export const serverRoutes: ServerRoute[] = [
+  {
+    path: 'pokemons/page/:page',
+    renderMode: RenderMode.Prerender,
+    async getPrerenderParams() {
+      return Array.from({ length: POKEMON_LIMIT }, (_, i) => ({
+        page: (i + 1).toString(),
+      }));
+    },
+  },
   {
     path: 'pokemons/:id',
     renderMode: RenderMode.Prerender,
